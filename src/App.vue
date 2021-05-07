@@ -156,9 +156,12 @@
     <el-drawer
       title="详情"
       :visible.sync="detailDrawer"
+      custom-class="detailDrawer"
       size="100%"
       direction="ttb"
     >
+    <el-container style="height:100%; padding:0;margin:0;">
+      <el-main :style="drawMain">
       <div>
         <el-tag>序号 {{ selectRow.index + 1 }}</el-tag>
         <el-tag>{{ selectRow.code }}</el-tag>
@@ -207,9 +210,9 @@
           </el-timeline>
         </div>
       </div>
-
-      <div
-        style="position:fixed; bottom:0;border-top:1px solid #eee;width:100%;padding:5px"
+      </el-main>
+      <el-footer
+        style="height:50px;border-top:1px solid #eee;width:100%;padding:5px"
       >
         <el-button
           type="primary"
@@ -232,7 +235,8 @@
           style="float:right"
           >标记</el-switch
         >
-      </div>
+      </el-footer>
+      </el-container>
     </el-drawer>
     <div class="refresh">
       <el-button
@@ -259,6 +263,12 @@ export default {
         benchDeclareDate: "2020-12-31", //持仓基准
         fundNum: 5,
         holdMarketValue: 5,
+      },
+      drawMain:{
+        height: (window.innerHeight - 130)+'px',
+        overflow: 'auto',
+        padding: 0,
+        margin: 0
       },
       highlight: true,
       drawer: false,
@@ -454,7 +464,7 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .el-tag {
   margin: 5px 0 0 5px;
 }
@@ -473,11 +483,6 @@ thead {
   right: 20px;
   bottom: 50px;
 }
-.el-drawer__header {
-  padding: 5px !important;
-  border-bottom: 1px solid #eee;
-  margin-bottom: 5px !important;
-}
 .el-timeline {
   padding-left: 10px;
 }
@@ -495,5 +500,9 @@ thead {
   .line {
     margin: 10px 5px 5px 0;
   }
+}
+.detail{
+  height: calc(100% - 90px);
+  overflow: auto;
 }
 </style>

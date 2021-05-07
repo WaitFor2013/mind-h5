@@ -3,7 +3,8 @@ module.exports = {
       port: 3031,
       proxy: {
         '/mind': {
-          target: 'http://127.0.0.1:3002/',
+          //127
+          target: 'http://121.4.123.204/',
           changeOrigin: true,
         }
       },

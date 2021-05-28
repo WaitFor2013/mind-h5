@@ -238,6 +238,40 @@
       </el-footer>
       </el-container>
     </el-drawer>
+     <el-drawer
+      title="日志记录"
+      :visible.sync="viewBackDrawer"
+      custom-class="detailDrawer"
+      size="100%"
+      direction="ttb"
+    >
+    <el-container style="height:100%; padding:0;margin:0;">
+      <el-main :style="drawMain">
+      <el-divider content-position="left">分析记录</el-divider>
+      <div class="remark">
+        <div class="line">
+          <el-timeline>
+            <el-timeline-item
+              v-for="(activity, index) in viewBackList"
+              :key="index"
+              :timestamp="activity.formatTime"
+            >
+              <span>{{ activity.remark }}</span><span class="stockView" @click="openOtherPage(activity.code)">{{ activity.name }} </span>
+            </el-timeline-item>
+          </el-timeline>
+        </div>
+      </div>
+      </el-main>
+      </el-container>
+    </el-drawer>
+    <div class="viewBack">
+      <el-button
+        type="primary"
+        icon="el-icon-edit"
+        circle
+        @click="viewBackOpen"
+      ></el-button>
+    </div>
     <div class="refresh">
       <el-button
         type="primary"
@@ -258,11 +292,11 @@ export default {
     return {
       query: {
         keywords: "",
-        benchmarkDate: "20210430", //价格比较日期
+        benchmarkDate: "20210524", //价格比较日期
         declareDate: "2021-03-31", //持仓日期
         benchDeclareDate: "2020-12-31", //持仓基准
-        fundNum: 5,
-        holdMarketValue: 5,
+        fundNum: 8,
+        holdMarketValue: 8,
       },
       drawMain:{
         height: (window.innerHeight - 130)+'px',
@@ -283,12 +317,29 @@ export default {
       table: {
         height: window.innerHeight - 30,
       },
+      viewBackDrawer: false,
+      viewBackList: []
     };
   },
   created() {
     this.queryRemote();
   },
   methods: {
+    viewBackOpen(){
+      this.viewBackDrawer = true;
+      this.$axios({
+        url: "/mind/logQuery",
+        method: "post",
+        params: {
+        },
+      })
+        .then((res) => {
+          this.viewBackList = res.data;
+        })
+        .catch((error) => {
+          this.$message.error("获取备注信息失败");
+        });
+    },
     drawerOpen() {
       this.drawer = true;
     },
@@ -457,6 +508,9 @@ export default {
     openOtherHq() {
       window.open("http://stockpage.10jqka.com.cn/" + this.selectRow.code);
     },
+    openOtherPage(cdd){
+      window.open("http://stockpage.10jqka.com.cn/" + cdd);
+    },
     numHandle(p, lp) {
       return numeral(p - lp).format("0");
     },
@@ -476,6 +530,12 @@ thead {
     color: #ffffff;
     background: #409eff;
   }
+}
+.viewBack{
+  position: fixed;
+  font-size: 30px;
+  right: 20px;
+  bottom: 120px;
 }
 .refresh {
   position: fixed;
@@ -504,5 +564,10 @@ thead {
 .detail{
   height: calc(100% - 90px);
   overflow: auto;
+}
+.stockView{
+  margin: 0 0 0 10px;
+  color:blue;
+  cursor: pointer;
 }
 </style>
